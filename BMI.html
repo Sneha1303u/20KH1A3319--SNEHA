@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health Awareness & BMI Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans leading-relaxed">
+
+  <!-- Header -->
+  <header class="bg-green-600 text-white p-6 text-center">
+    <h1 class="text-3xl font-bold">Health Awareness & BMI Calculator</h1>
+    <p class="text-sm">Understand. Prevent. Live Better.</p>
+  </header>
+
+  <main class="p-6 space-y-12 max-w-3xl mx-auto">
+
+    <!-- Health Issues -->
+    <section class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Common Health Issues</h2>
+      <ul class="list-disc list-inside text-gray-700 space-y-2">
+        <li>Diabetes</li>
+        <li>Hypertension (High Blood Pressure)</li>
+        <li>Heart Disease</li>
+        <li>Obesity</li>
+        <li>Mental Health (Anxiety, Depression)</li>
+        <li>Asthma</li>
+      </ul>
+    </section>
+
+    <!-- Prevention Tips -->
+    <section class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Prevention Tips</h2>
+      <ul class="list-disc list-inside text-gray-700 space-y-2">
+        <li>Eat a balanced, nutritious diet</li>
+        <li>Exercise regularly (30 mins/day)</li>
+        <li>Manage stress with meditation and sleep</li>
+        <li>Get regular medical check-ups</li>
+        <li>Avoid smoking and excessive alcohol</li>
+      </ul>
+    </section>
+
+    <!-- BMI Calculator -->
+    <section class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">BMI Calculator</h2>
+      <div class="space-y-4">
+        <input id="weight" type="number" placeholder="Weight in kg" class="w-full p-2 border rounded" />
+        <input id="height" type="number" placeholder="Height in cm" class="w-full p-2 border rounded" />
+
+        <button onclick="calculateBMI()" class="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700">
+          Calculate BMI
+        </button>
+
+        <div id="result" class="mt-4 text-center font-medium text-gray-800"></div>
+        <div id="tips" class="mt-4 text-sm text-gray-700"></div>
+      </div>
+    </section>
+
+    <!-- All Diet Plan Sections -->
+    <section id="diet-plans" class="space-y-8">
+      <!-- Underweight -->
+      <div id="underweight-section" class="hidden bg-white p-6 rounded shadow">
+        <h3 class="text-2xl font-bold text-green-700 mb-4">Underweight: Diet & Exercise Plan</h3>
+        <ul class="list-disc list-inside mb-4">
+          <li>High-calorie nutritious foods: nuts, dairy, eggs</li>
+          <li>Strength training and resistance exercises</li>
+          <li>Track intake and avoid skipping meals</li>
+        </ul>
+      </div>
+
+      <!-- Normal -->
+      <div id="normal-section" class="hidden bg-white p-6 rounded shadow">
+        <h3 class="text-2xl font-bold text-green-700 mb-4">Normal Weight: Diet & Exercise Plan</h3>
+        <ul class="list-disc list-inside mb-4">
+          <li>Maintain balanced meals with fruits, veggies, protein</li>
+          <li>Moderate cardio and flexibility exercises (yoga, walking)</li>
+          <li>Consistent sleep, hydration, and mental wellness</li>
+        </ul>
+      </div>
+
+      <!-- Overweight -->
+      <div id="overweight-section" class="hidden bg-white p-6 rounded shadow">
+        <h3 class="text-2xl font-bold text-yellow-600 mb-4">Overweight: Diet & Exercise Plan</h3>
+        <ul class="list-disc list-inside mb-4">
+          <li>Reduce sugar, saturated fats, and processed foods</li>
+          <li>Daily cardio: brisk walking, swimming, cycling</li>
+          <li>Track meals and control portions</li>
+        </ul>
+      </div>
+
+      <!-- Obese -->
+      <div id="obese-section" class="hidden bg-white p-6 rounded shadow">
+        <h3 class="text-2xl font-bold text-red-600 mb-4">Obese: Diet & Exercise Plan</h3>
+        <ul class="list-disc list-inside mb-4">
+          <li>Consult with a doctor or dietitian for safe planning</li>
+          <li>Focus on fiber-rich, low-calorie foods (fruits, greens)</li>
+          <li>Low-impact workouts: chair exercises, walking, aquatic fitness</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-green-600 text-white text-center p-4 mt-10">
+    &copy; 2025 HealthCare Info. All rights reserved.
+  </footer>
+
+  <!-- JavaScript for BMI Logic -->
+  <script>
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const heightCm = parseFloat(document.getElementById('height').value);
+      const resultDiv = document.getElementById('result');
+      const tipsDiv = document.getElementById('tips');
+
+      const sections = ['underweight', 'normal', 'overweight', 'obese'];
+      sections.forEach(id => document.getElementById(`${id}-section`).classList.add('hidden'));
+
+      if (isNaN(weight) || isNaN(heightCm) || weight <= 0 || heightCm <= 0) {
+        resultDiv.innerText = 'Please enter valid values.';
+        tipsDiv.innerHTML = '';
+        return;
+      }
+
+      const heightM = heightCm / 100;
+      const bmi = weight / (heightM * heightM);
+      let category = '';
+      let tips = '';
+
+      if (bmi < 18.5) {
+        category = 'Underweight';
+        tips = `
+          <ul class="list-disc list-inside">
+            <li>Increase intake of protein and healthy fats</li>
+            <li>Eat more frequently throughout the day</li>
+            <li>Include nutrient-rich foods: nuts, eggs, dairy</li>
+            <li>Consider seeing a nutritionist</li>
+          </ul>`;
+        document.getElementById('underweight-section').classList.remove('hidden');
+      } else if (bmi < 24.9) {
+        category = 'Normal weight';
+        tips = `
+          <ul class="list-disc list-inside">
+            <li>Maintain a balanced diet with whole foods</li>
+            <li>Stay active with daily exercise</li>
+            <li>Get regular health checkups</li>
+            <li>Stay hydrated and sleep well</li>
+          </ul>`;
+        document.getElementById('normal-section').classList.remove('hidden');
+      } else if (bmi < 29.9) {
+        category = 'Overweight';
+        tips = `
+          <ul class="list-disc list-inside">
+            <li>Reduce intake of sugar and processed food</li>
+            <li>Incorporate cardio and strength workouts</li>
+            <li>Watch portion sizes and snack smartly</li>
+            <li>Track progress with a fitness app</li>
+          </ul>`;
+        document.getElementById('overweight-section').classList.remove('hidden');
+      } else {
+        category = 'Obese';
+        tips = `
+          <ul class="list-disc list-inside">
+            <li>Consult a healthcare provider for a weight-loss plan</li>
+            <li>Focus on low-calorie, high-fiber foods</li>
+            <li>Engage in moderate physical activity daily</li>
+            <li>Build healthy, sustainable habits</li>
+          </ul>`;
+        document.getElementById('obese-section').classList.remove('hidden');
+      }
+
+      resultDiv.innerText = `Your BMI is ${bmi.toFixed(1)} (${category})`;
+      tipsDiv.innerHTML = `<h3 class="font-semibold mb-2 text-gray-800">Health Tips:</h3>${tips}`;
+    }
+  </script>
+
+</body>
+</html>
