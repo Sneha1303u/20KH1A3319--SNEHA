@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Top Cars Search + Upload</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #f7f8fa, #dfe9f3);
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #searchBox {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px;
+      width: 60%;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .form-container {
+      width: 60%;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .form-container input, .form-container button {
+      margin: 8px 5px;
+      padding: 10px;
+      width: calc(50% - 15px);
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .form-container input[type="file"] {
+      width: 100%;
+    }
+
+    .form-container button {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    .form-container button:hover {
+      background-color: #45a049;
+    }
+
+    .car {
+      display: flex;
+      align-items: center;
+      background: white;
+      margin: 15px auto;
+      padding: 15px;
+      border-radius: 12px;
+      width: 60%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      gap: 15px;
+    }
+
+    .car img {
+      width: 120px;
+      height: auto;
+      border-radius: 10px;
+      border: 3px solid #eee;
+    }
+
+    .car-info {
+      flex: 1;
+    }
+
+    .car-info h2 {
+      margin: 0 0 8px 0;
+      color: #2e4053;
+    }
+
+    .no-results {
+      text-align: center;
+      color: gray;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🚘 Top Cars Search</h1>
+
+  <input type="text" id="searchBox" placeholder="Search for a car...">
+
+  <!-- Add Car Form -->
+  <div class="form-container">
+    <input type="text" id="carName" placeholder="Car Name">
+    <input type="text" id="carType" placeholder="Car Type (e.g. SUV)">
+    <input type="text" id="carPrice" placeholder="Car Price (e.g. $50,000)">
+    <input type="file" id="carImage" accept="image/*">
+    <button onclick="addCar()">Add New Car</button>
+  </div>
+
+  <!-- Car List -->
+  <div id="carList"></div>
+
+  <script>
+    const cars = [
+      {
+        name: "Tesla Model S",
+        type: "Electric",
+        price: "$89,990",
+        image: "https://tesla-cdn.thron.com/delivery/public/image/tesla/27e882a2-302c-4305-94d0-cb2aaedc3789/bvlatuR/std/2880x1800/Desktop-ModelS"
+      },
+      {
+        name: "BMW M3",
+        type: "Sedan",
+        price: "$74,300",
+        image: "https://www.bmwusa.com/content/dam/bmwusa/M/M3-Sedan/2023/overview/BMW-MY23-M3-Sedan-Gallery-02.jpg"
+      }
+    ];
+
+    const carList = document.getElementById('carList');
+    const searchBox = document.getElementById('searchBox');
+
+    function displayCars(filteredCars) {
+      carList.innerHTML = '';
+
+      if (filteredCars.length === 0) {
+        carList.innerHTML = '<div class="no-results">No cars found.</div>';
+        return;
+      }
+
+      filteredCars.forEach(car => {
+        const carDiv = document.createElement('div');
+        carDiv.className = 'car';
+        carDiv.innerHTML = `
+          <img src="${car.image}" alt="${car.name}">
+          <div class="car-info">
+            <h2>${car.name}</h2>
+            <p>Type: ${car.type}</p>
+            <p>Price: ${car.price}</p>
+          </div>
+        `;
+        carList.appendChild(carDiv);
+      });
+    }
+
+    function addCar() {
+      const name = document.getElementById('carName').value.trim();
+      const type = document.getElementById('carType').value.trim();
+      const price = document.getElementById('carPrice').value.trim();
+      const imageInput = document.getElementById('carImage');
+
+      if (!name || !type || !price || imageInput.files.length === 0) {
+        alert("Please fill all fields and select an image.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const newCar = {
+          name,
+          type,
+          price,
+          image: e.target.result  // base64 image string
+        };
+        cars.push(newCar);
+        displayCars(cars);
+        document.getElementById('carName').value = '';
+        document.getElementById('carType').value = '';
+        document.getElementById('carPrice').value = '';
+        imageInput.value = '';
+      };
+
+      reader.readAsDataURL(imageInput.files[0]);
+    }
+
+    searchBox.addEventListener('input', () => {
+      const query = searchBox.value.toLowerCase();
+      const filtered = cars.filter(car =>
+        car.name.toLowerCase().includes(query) ||
+        car.type.toLowerCase().includes(query)
+      );
+      displayCars(filtered);
+    });
+
+    displayCars(cars);
+  </script>
+
+</body>
+</html>
+
